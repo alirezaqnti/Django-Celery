@@ -1,0 +1,25 @@
+#  docker compose file allows us to describe multiple services that we're going to build for our working  environmnet
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7.0.11-alpine
+
+  django:
+    container_name: django
+    build: 
+      context: ./Code
+    command: python manage.py runserver 0.0.0.0:8000
+    # volume creates a space in container in order to keep the code updated
+    # so every time a change occurs in local machine a copy will sent to the container  
+    volumes:
+      - ./Code:/usr/src/app
+    # ports will map the local port to container port
+    ports:
+      - 8001:8000
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=sgempawmfpawmfowrm2oprj30295u0239u023r23
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+    depends_on:
+      - redis
